@@ -12,6 +12,10 @@ public class PlayerScript : MonoBehaviour
 
     public float moveSpeed = 20.0f;
 
+    public Rigidbody2D bullet;
+    public float bulletSpeed = 10;
+
+
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
@@ -21,6 +25,11 @@ public class PlayerScript : MonoBehaviour
     {
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
+
+        if (Input.GetKeyDown("space"))
+        {
+            PlayerAttack();
+        }
     }
 
     private void FixedUpdate()
@@ -32,5 +41,11 @@ public class PlayerScript : MonoBehaviour
 
         }
         body.velocity = new Vector2(horizontal * moveSpeed, vertical * moveSpeed);
+    }
+
+    public void PlayerAttack()
+    {
+        Rigidbody2D clone;
+        clone = Instantiate(bullet, transform.position, transform.rotation);
     }
 }
