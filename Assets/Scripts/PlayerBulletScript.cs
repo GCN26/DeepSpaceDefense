@@ -10,7 +10,9 @@ public class PlayerBulletScript : MonoBehaviour
     Rigidbody2D body;
     public Transform EndPoint;
 
-    public float speed = 10;
+    public float speed;
+    public int damage;
+
     void Start()
     {
         body = GetComponent<Rigidbody2D>();

@@ -32,10 +32,16 @@ public class WaveManager : MonoBehaviour
             Debug.Log("Upgrade");
             //when upgrade is complete, allow for wave to be spawned
         }
+        //if upgrade GUI is not present:
         if(waveNumber % 15 == 0)
         {
             //boss wave
             Debug.Log("Boss Wave");
+        }
+        else
+        {
+            //Regular Wave
+            Debug.Log("Normal Wave");
         }
     }
 }

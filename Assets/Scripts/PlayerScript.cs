@@ -14,6 +14,8 @@ public class PlayerScript : MonoBehaviour
 
     public Rigidbody2D bullet;
     public float bulletSpeed = 10;
+    public int bulletDamage = 1;
+    public int bulletCount = 1;
 
 
     void Start()
@@ -45,7 +47,38 @@ public class PlayerScript : MonoBehaviour
 
     public void PlayerAttack()
     {
+        if(bulletCount % 2 != 0) {
+            SpawnBullet(0);
+            //for loop but add 2 each time
+            for(float i = 0; i < bulletCount-2; i++)
+            {
+                SpawnBullet(-(i+1)*.5f);
+                SpawnBullet((i + 1) * .5f);
+            }
+        }
+        else
+        {
+            SpawnBullet(.5f);
+            SpawnBullet(-.5f);
+            //for loop but add 2 each time
+            for (float i = 0; i < bulletCount-2; i++)
+            {
+                SpawnBullet(-(i + 1) * .5f);
+                SpawnBullet((i + 1) * .5f);
+            }
+        }
+    }
+    public void SpawnBullet(float dist)
+    {
+        Vector3 distance = transform.position + new Vector3(dist, 0, 0);
         Rigidbody2D clone;
-        clone = Instantiate(bullet, transform.position, transform.rotation);
+        clone = Instantiate(bullet, distance, transform.rotation);
+        clone.GetComponent<PlayerBulletScript>().speed = bulletSpeed;
+        clone.GetComponent<PlayerBulletScript>().damage = bulletDamage;
+    }
+
+    public void CountUpgrade()
+    {
+        bulletCount += 1;
     }
 }
