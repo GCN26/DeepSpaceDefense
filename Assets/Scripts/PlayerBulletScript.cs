@@ -16,16 +16,12 @@ public class PlayerBulletScript : MonoBehaviour
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
     }
 
     // Update is called once per frame
     void Update()
     {
         body.velocity = new Vector2(0,speed);
-
-        
 
     }
 

@@ -17,9 +17,11 @@ public class WaveManager : MonoBehaviour
         else
         {
             waveNumber += 1;
-            Debug.Log("waveNumber");
-            GameObject WaveMember = Instantiate(prefab);
-            WaveMember.name = "WaveMember";
+            //Run code based on what wave it is
+            //if wave number is 3, activate ui
+            //once ui is closed, run wave creation code
+            //if wave number is 15, run boss creation code after upgrade
+            //with boss active, spawn enemies endlessly.
             WaveLogic();
         }
     }
@@ -41,7 +43,9 @@ public class WaveManager : MonoBehaviour
         else
         {
             //Regular Wave
-            Debug.Log("Normal Wave");
         }
+        Debug.Log("waveNumber");
+        GameObject WaveMember = Instantiate(prefab);
+        WaveMember.name = "WaveMember";
     }
 }
