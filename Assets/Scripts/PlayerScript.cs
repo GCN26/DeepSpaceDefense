@@ -47,6 +47,10 @@ public class PlayerScript : MonoBehaviour
 
     public void PlayerAttack()
     {
+        if(bulletCount > 10)
+        {
+            bulletCount = 10;
+        }
         if(bulletCount % 2 != 0) {
             SpawnBullet(0);
             //for loop but add 2 each time
