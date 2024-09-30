@@ -13,8 +13,8 @@ TagManager:
   - BulletIgnore
   - Water
   - UI
-  - 
-  - 
+  - EnemyIgnore
+  - EnemyAndBulletIgnore
   - 
   - 
   - 

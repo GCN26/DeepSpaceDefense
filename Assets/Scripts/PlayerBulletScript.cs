@@ -32,5 +32,9 @@ public class PlayerBulletScript : MonoBehaviour
         {
             Destroy(gameObject);
         }
+       if(collision.gameObject.tag == "Player")
+        {
+            Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), gameObject.GetComponent<Collider2D>());
+        }
     }
 }
