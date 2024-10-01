@@ -23,6 +23,10 @@ public class WaveManager : MonoBehaviour
     //Randomize which pattern will spawn and which paths they will spawn on
     public int randNum;
 
+    //variables to allow for continuous spawning during boss wave
+    public int spawnTimer = 90;
+    public int spawnTimerTarget = 90;
+
     void Update()
     {
         if (GameObject.Find("WaveMember") != null)
@@ -43,7 +47,6 @@ public class WaveManager : MonoBehaviour
 
     public void WaveLogic()
     {
-        randNum = UnityEngine.Random.Range(6, 7);
         if (waveNumber % 3 == 0)
         {
             //upgrade script
@@ -61,7 +64,14 @@ public class WaveManager : MonoBehaviour
             //Regular Wave
         }
         Debug.Log("waveNumber");
-        SpawnWave(randNum);
+        randNum = UnityEngine.Random.Range(0, 7);
+        SpawnWave(randNum, 0, waveNumber);
+        randNum = UnityEngine.Random.Range(0, 7);
+        SpawnWave(randNum, 4, waveNumber);
+        randNum = UnityEngine.Random.Range(0, 7);
+        SpawnWave(randNum, 0, waveNumber);
+        randNum = UnityEngine.Random.Range(0, 7);
+        SpawnWave(randNum, 8, waveNumber);
 
     }
 
@@ -106,52 +116,57 @@ public class WaveManager : MonoBehaviour
         }
         else return null;
     }
-    public void SpawnWave(int randNum)
+    public void SpawnWave(int randNum, int addLayer, int waveNumber)
     {
+        int layerMulti = (addLayer)*6;
+
         if (randNum == 0)
         {
-            //spawn 1 enemy on path 1
-            SpawnEnemy(0, 0);
+            SpawnEnemy(0, 0+addLayer);
+            SpawnEnemy(0, 1 + addLayer);
+            SpawnEnemy(0, 2 + addLayer);
         }
         else if (randNum == 1)
         {
-            //spawn 1 enemy on path 2
-            SpawnEnemy(1, 0);
+            SpawnEnemy(1, 0 + addLayer);
+            SpawnEnemy(1, 1 + addLayer);
+            SpawnEnemy(1, 2 + addLayer);
         }
         else if (randNum == 2)
         {
-            //spawn 1 enemy on path 3
-            SpawnEnemy(2, 0);
+            SpawnEnemy(2, 0 + addLayer);
+            SpawnEnemy(2, 1 + addLayer);
+            SpawnEnemy(2, 2 + addLayer);
         }
         else if (randNum == 3)
         {
             //spawn 1 enemy on path 1 and 1 on 3
-            SpawnEnemy(0, 0);
-            SpawnEnemy(2, 0);
+            SpawnEnemy(0, 0 + addLayer);
+            SpawnEnemy(2, 1 + addLayer);
         }
         else if (randNum == 4)
         {
             //spawn 2 enemies on path 1 and 2 on 3
-            SpawnEnemy(0, 0);
-            SpawnEnemy(2, 0);
-            SpawnEnemy(0, 1);
-            SpawnEnemy(2, 1);
+            SpawnEnemy(0, 0 +addLayer);
+            SpawnEnemy(2, 0 + addLayer);
+            SpawnEnemy(0, 1 + addLayer);
+            SpawnEnemy(2, 1 + addLayer);
         }
         else if (randNum == 5)
         {
-            SpawnEnemy(0, 0);
-            SpawnEnemy(2, 0);
-            SpawnEnemy(0, 1);
-            SpawnEnemy(2, 1);
-            SpawnEnemy(0, 2);
-            SpawnEnemy(1, 2);
-            SpawnEnemy(2, 2);
+            SpawnEnemy(0, 0 + addLayer);
+            SpawnEnemy(2, 0 + addLayer);
+            SpawnEnemy(0, 1 + addLayer);
+            SpawnEnemy(2, 1 + addLayer);
+            SpawnEnemy(0, 2 + addLayer);
+            SpawnEnemy(1, 2 + addLayer);
+            SpawnEnemy(2, 2 + addLayer);
         }
         else if (randNum == 6)
         {
             //spawn 1 enemy on path 1 and 1 on 3
-            SpawnEnemy(3, 0);
-            SpawnEnemy(4, 0);
+            SpawnEnemy(3, 0 + addLayer);
+            SpawnEnemy(4, 0 + addLayer);
         }
     }
 }

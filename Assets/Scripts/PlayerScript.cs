@@ -85,4 +85,12 @@ public class PlayerScript : MonoBehaviour
     {
         bulletCount += 1;
     }
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "EnemyBullet")
+        {
+            //Destroy, Remove one life, and respawn at origin with iframes
+            Destroy(gameObject);
+        }
+    }
 }
