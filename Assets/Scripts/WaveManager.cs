@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Xml;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -27,57 +29,93 @@ public class WaveManager : MonoBehaviour
     public int spawnTimer = 90;
     public int spawnTimerTarget = 90;
 
+    bool waveCall = false;
+
+    public GameObject UpgradeMenu;
+
+    public GameObject ResManager;
+
+    public int level;
+
+    public TextMeshProUGUI WaveNumberDisplay;
+
+    public GameObject asteroidManager;
+
+    private void Start()
+    {
+        UpgradeMenu.SetActive(false);
+    }
+
     void Update()
     {
-        if (GameObject.Find("WaveMember") != null)
+        //This should eventually be replaced with a counter that takes every instance of the object
+        //then calls the code rather than when theres no wave members
+        //after each wave should be a brief period of time with text on screen that says "Wave Complete"
+        if (waveCall == true)
         {
-
+            waveCall = false;
+            UpgradeCheck();
+            waveNumber += 1;
+            if(waveNumber % 5 == 0 && waveNumber != 0)
+            {
+                level += 1;
+            }
+            WaveLogic();    
         }
         else
         {
-            waveNumber += 1;
-            //Run code based on what wave it is
-            //if wave number is 3, activate ui
-            //once ui is closed, run wave creation code
-            //if wave number is 15, run boss creation code after upgrade
-            //with boss active, spawn enemies endlessly.
-            WaveLogic();
+            if(GameObject.Find("WaveMember") == null && UpgradeMenu.activeSelf == false)
+            {
+                waveCall = true;
+            }
         }
     }
 
     public void WaveLogic()
     {
-        if (waveNumber % 3 == 0)
+        //if upgrade GUI is not present OR game is not over
+        if (UpgradeMenu.activeSelf == false)
         {
-            //upgrade script
-            Debug.Log("Upgrade");
-            //when upgrade is complete, allow for wave to be spawned
+            if (waveNumber % 15 == 0)
+            {
+                WaveNumberDisplay.text = "Wave #" + waveNumber.ToString() + "\nBoss Wave";
+                //boss wave
+                Debug.Log("Boss Wave");
+                for (int i = 0; i < level + 1; i++)
+                {
+                    randNum = UnityEngine.Random.Range(0, 7);
+                    SpawnWave(randNum, (i * 4));
+                }
+                //add variable that stops the game after the boss is defeated rather than spawning a new wave
+            }
+            else
+            {
+                WaveNumberDisplay.text = "Wave #" + waveNumber.ToString();
+                for (int i = 0; i < level+1; i++)
+                {
+                    randNum = UnityEngine.Random.Range(0, 7);
+                    SpawnWave(randNum, (i*4));
+                }
+                if(waveNumber % 2 == 0)
+                {
+                    randNum = UnityEngine.Random.Range(0, 4);
+                    asteroidManager.GetComponent<AsteroidManagerScript>().SpawnAsteroid(randNum);
+                }
+            }
         }
-        //if upgrade GUI is not present:
-        if(waveNumber % 15 == 0)
+    }
+    public void UpgradeCheck()
+    {
+        if (waveNumber % 3 == 0 && waveNumber != 0)
         {
-            //boss wave
-            Debug.Log("Boss Wave");
+            UpgradeMenu.SetActive(true);
+            ResManager.gameObject.GetComponent<PlayerRespawnScript>().lives += 1;
         }
-        else
-        {
-            //Regular Wave
-        }
-        Debug.Log("waveNumber");
-        randNum = UnityEngine.Random.Range(0, 7);
-        SpawnWave(randNum, 0, waveNumber);
-        randNum = UnityEngine.Random.Range(0, 7);
-        SpawnWave(randNum, 4, waveNumber);
-        randNum = UnityEngine.Random.Range(0, 7);
-        SpawnWave(randNum, 0, waveNumber);
-        randNum = UnityEngine.Random.Range(0, 7);
-        SpawnWave(randNum, 8, waveNumber);
-
     }
 
 
 
-    public void SpawnEnemy(int path, int layer)
+    public void SpawnEnemy(int path, int layer, int level)
     {
         int direct = 0;
         if (path == 0) direct = -1; else if (path == 1) direct = 0; else if (path == 2) direct = 1;
@@ -86,6 +124,7 @@ public class WaveManager : MonoBehaviour
         WaveMember.name = "WaveMember";
         AmNode[] nodes = PathSelect(path);
         WaveMember.GetComponent<PathNodeScript>().nodes = nodes;
+        WaveMember.GetComponent<WaveObject>().hp = 1+level;
     }
     public AmNode[] PathSelect(int path)
     {
@@ -116,57 +155,56 @@ public class WaveManager : MonoBehaviour
         }
         else return null;
     }
-    public void SpawnWave(int randNum, int addLayer, int waveNumber)
+    public void SpawnWave(int randNum, int addLayer)
     {
-        int layerMulti = (addLayer)*6;
 
         if (randNum == 0)
         {
-            SpawnEnemy(0, 0+addLayer);
-            SpawnEnemy(0, 1 + addLayer);
-            SpawnEnemy(0, 2 + addLayer);
+            SpawnEnemy(0, 0+addLayer,level);
+            SpawnEnemy(0, 1 + addLayer, level);
+            SpawnEnemy(0, 2 + addLayer, level);
         }
         else if (randNum == 1)
         {
-            SpawnEnemy(1, 0 + addLayer);
-            SpawnEnemy(1, 1 + addLayer);
-            SpawnEnemy(1, 2 + addLayer);
+            SpawnEnemy(1, 0 + addLayer, level);
+            SpawnEnemy(1, 1 + addLayer, level);
+            SpawnEnemy(1, 2 + addLayer, level);
         }
         else if (randNum == 2)
         {
-            SpawnEnemy(2, 0 + addLayer);
-            SpawnEnemy(2, 1 + addLayer);
-            SpawnEnemy(2, 2 + addLayer);
+            SpawnEnemy(2, 0 + addLayer, level);
+            SpawnEnemy(2, 1 + addLayer, level);
+            SpawnEnemy(2, 2 + addLayer, level);
         }
         else if (randNum == 3)
         {
             //spawn 1 enemy on path 1 and 1 on 3
-            SpawnEnemy(0, 0 + addLayer);
-            SpawnEnemy(2, 1 + addLayer);
+            SpawnEnemy(0, 0 + addLayer, level);
+            SpawnEnemy(2, 1 + addLayer, level);
         }
         else if (randNum == 4)
         {
             //spawn 2 enemies on path 1 and 2 on 3
-            SpawnEnemy(0, 0 +addLayer);
-            SpawnEnemy(2, 0 + addLayer);
-            SpawnEnemy(0, 1 + addLayer);
-            SpawnEnemy(2, 1 + addLayer);
+            SpawnEnemy(0, 0 +addLayer, level);
+            SpawnEnemy(2, 0 + addLayer, level);
+            SpawnEnemy(0, 1 + addLayer, level);
+            SpawnEnemy(2, 1 + addLayer, level);
         }
         else if (randNum == 5)
         {
-            SpawnEnemy(0, 0 + addLayer);
-            SpawnEnemy(2, 0 + addLayer);
-            SpawnEnemy(0, 1 + addLayer);
-            SpawnEnemy(2, 1 + addLayer);
-            SpawnEnemy(0, 2 + addLayer);
-            SpawnEnemy(1, 2 + addLayer);
-            SpawnEnemy(2, 2 + addLayer);
+            SpawnEnemy(0, 0 + addLayer, level);
+            SpawnEnemy(2, 0 + addLayer, level);
+            SpawnEnemy(0, 1 + addLayer, level);
+            SpawnEnemy(2, 1 + addLayer, level);
+            SpawnEnemy(0, 2 + addLayer, level);
+            SpawnEnemy(1, 2 + addLayer, level);
+            SpawnEnemy(2, 2 + addLayer, level);
         }
         else if (randNum == 6)
         {
             //spawn 1 enemy on path 1 and 1 on 3
-            SpawnEnemy(3, 0 + addLayer);
-            SpawnEnemy(4, 0 + addLayer);
+            SpawnEnemy(3, 0 + addLayer, level);
+            SpawnEnemy(4, 0 + addLayer, level);
         }
     }
 }

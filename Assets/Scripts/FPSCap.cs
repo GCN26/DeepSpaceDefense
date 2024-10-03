@@ -2,27 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UpgradeScript : MonoBehaviour
+public class FPSCap : MonoBehaviour
 {
-    public Transform Player;
-    public GameObject menu;
-
-
     // Start is called before the first frame update
     void Start()
     {
-        
+        Application.targetFrameRate = 60;
     }
 
     // Update is called once per frame
     void Update()
     {
         
-    }
-
-
-    public void closeMenu()
-    {
-        menu.SetActive(false);
     }
 }

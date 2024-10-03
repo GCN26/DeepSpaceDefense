@@ -25,10 +25,10 @@ public class EnemyBulletScript : MonoBehaviour
 
     }
 
-    //destroy bullet when touching endpoint
+    //destroy bullet when touching endpoint, player, or player bullet
     void OnCollisionEnter2D(Collision2D collision)
     {
-       if(collision.gameObject.tag == "End")
+        if (collision.gameObject.CompareTag("End") || collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Bullet"))
         {
             Destroy(gameObject);
         }

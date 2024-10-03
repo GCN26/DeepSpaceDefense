@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.UI;
 using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
     Rigidbody2D body;
+    public GameObject self;
 
     float horizontal;
     float vertical;
@@ -17,6 +20,10 @@ public class PlayerScript : MonoBehaviour
     public int bulletDamage = 1;
     public int bulletCount = 1;
 
+    public int iFrameTimer = 0;
+    public int iFrameTarget = 180;
+
+    public int hp = 3;
 
     void Start()
     {
@@ -31,6 +38,13 @@ public class PlayerScript : MonoBehaviour
         if (Input.GetKeyDown("space"))
         {
             PlayerAttack();
+        }
+        if(iFrameTimer <= iFrameTarget)
+        {
+            iFrameTimer++;
+        }
+        if(iFrameTimer >= iFrameTarget) {
+            self.SetActive(false);
         }
     }
 
@@ -81,16 +95,24 @@ public class PlayerScript : MonoBehaviour
         clone.GetComponent<PlayerBulletScript>().damage = bulletDamage;
     }
 
-    public void CountUpgrade()
-    {
-        bulletCount += 1;
-    }
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "EnemyBullet")
+        if (iFrameTimer >= iFrameTarget)
         {
-            //Destroy, Remove one life, and respawn at origin with iframes
-            Destroy(gameObject);
+            if (collision.gameObject.tag == "EnemyBullet" || collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Asteroid")
+            {
+                //Destroy, Remove one life, and respawn at origin with iframes
+                //try and stop collisions during iframes
+                hp -= 1;
+                iFrameTimer = 0;
+                self.SetActive(true);
+                if (hp<=0) { 
+                    Destroy(gameObject); }
+            }
+        }
+        if (collision.gameObject.tag == "EnemyBullet" || collision.gameObject.tag == "Enemy")
+        {
+            Destroy(collision.gameObject);
         }
     }
 }
