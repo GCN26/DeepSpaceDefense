@@ -2,17 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PathNodeScript : MonoBehaviour
+public class BossNodeScript : MonoBehaviour
 {
     public AmNode[] nodes;
+    public Rigidbody2D body;
     //node index
     int currentNode = 0;
     //obvious
     public float speed;
     //How close the object must be to a node
     public float tolerance;
-
-    public AmNode killNode;
 
     // Update is called once per frame
     void Update()
@@ -32,9 +31,10 @@ public class PathNodeScript : MonoBehaviour
 
             currentNode = currentNode % nodes.Length;
         }
-        if (nodes[currentNode] == killNode)
+        if (currentNode == 1)
         {
-            Destroy(gameObject);
+            speed = 0;
+            body.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
         }
     }
 }

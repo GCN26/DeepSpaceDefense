@@ -152,10 +152,10 @@ MonoBehaviour:
   bulletSpeed: 10
   bulletDamage: 1
   bulletCount: 1
-  iFrameTimer: 120
-  iFrameTarget: 120
-  changeFrameTimer: 0
-  changeFrameTimerTarget: 4
+  iFrameTimer: 0
+  iFrameTarget: 2
+  hp: 3
+  explosion: {fileID: 3836231866899782792, guid: 08c77861cab6dd846ae3597b4357ecc1, type: 3}
 --- !u!50 &449778298407793042
 Rigidbody2D:
   serializedVersion: 4

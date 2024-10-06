@@ -20,10 +20,12 @@ public class PlayerScript : MonoBehaviour
     public int bulletDamage = 1;
     public int bulletCount = 1;
 
-    public int iFrameTimer = 0;
-    public int iFrameTarget = 180;
+    public float iFrameTimer = 0;
+    public float iFrameTarget = 2;
 
     public int hp = 3;
+
+    public GameObject explosion;
 
     void Start()
     {
@@ -41,7 +43,7 @@ public class PlayerScript : MonoBehaviour
         }
         if(iFrameTimer <= iFrameTarget)
         {
-            iFrameTimer++;
+            iFrameTimer += Time.deltaTime;
         }
         if(iFrameTimer >= iFrameTarget) {
             self.SetActive(false);
@@ -106,13 +108,19 @@ public class PlayerScript : MonoBehaviour
                 hp -= 1;
                 iFrameTimer = 0;
                 self.SetActive(true);
-                if (hp<=0) { 
+                if (hp<=0) {
+                    GameObject boom;
+                    boom = Instantiate(explosion, transform.position, transform.rotation);
                     Destroy(gameObject); }
             }
         }
-        if (collision.gameObject.tag == "EnemyBullet" || collision.gameObject.tag == "Enemy")
+        if (collision.gameObject.tag == "EnemyBullet")
         {
             Destroy(collision.gameObject);
+        }
+        if (collision.gameObject.tag == "Enemy")
+        {
+            collision.gameObject.GetComponent<WaveObject>().hp = 0;
         }
     }
 }

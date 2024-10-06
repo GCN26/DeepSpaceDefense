@@ -21,6 +21,8 @@ public class WaveManager : MonoBehaviour
     public AmNode NodeEnd1, NodeEnd2, NodeEnd3;
     //Looping Nodes
     public AmNode NodeLoopBL, NodeLoopBR, NodeLoopML, NodeLoopMR, NodeLoopTL, NodeLoopTR;
+    //Boss Wave Nodes
+    public AmNode NodeBossWave, NodeKill;
 
     //Randomize which pattern will spawn and which paths they will spawn on
     public int randNum;
@@ -35,11 +37,21 @@ public class WaveManager : MonoBehaviour
 
     public GameObject ResManager;
 
+    public GameObject BossManager;
+
+    public GameObject MidMenu;
+    public TextMeshProUGUI MidMenuText;
+
+    public GameObject PauseMenu;
+
     public int level;
 
     public TextMeshProUGUI WaveNumberDisplay;
 
-    public GameObject asteroidManager;
+    public bool bossAlive = true;
+
+    float endTimer = 0;
+    float endTarget = 1;
 
     private void Start()
     {
@@ -51,7 +63,7 @@ public class WaveManager : MonoBehaviour
         //This should eventually be replaced with a counter that takes every instance of the object
         //then calls the code rather than when theres no wave members
         //after each wave should be a brief period of time with text on screen that says "Wave Complete"
-        if (waveCall == true)
+        if (waveCall == true && bossAlive == true)
         {
             waveCall = false;
             UpgradeCheck();
@@ -62,11 +74,23 @@ public class WaveManager : MonoBehaviour
             }
             WaveLogic();    
         }
-        else
+        else if (bossAlive == true)
         {
-            if(GameObject.Find("WaveMember") == null && UpgradeMenu.activeSelf == false)
+            if(GameObject.Find("WaveMember") == null && UpgradeMenu.activeSelf == false && GameObject.Find("Boss") == null)
             {
                 waveCall = true;
+            }
+        }
+        else if (bossAlive == false)
+        {
+            Time.timeScale = 1;
+            Destroy(PauseMenu);
+            //end game
+            endTimer += Time.deltaTime;
+            if(endTimer > endTarget)
+            {
+                MidMenuText.text = "VICTORY!";
+                MidMenu.SetActive(true);
             }
         }
     }
@@ -76,14 +100,16 @@ public class WaveManager : MonoBehaviour
         //if upgrade GUI is not present OR game is not over
         if (UpgradeMenu.activeSelf == false)
         {
-            if (waveNumber % 15 == 0)
+            if (waveNumber % 16 == 0)
             {
-                WaveNumberDisplay.text = "Wave #" + waveNumber.ToString() + "\nBoss Wave";
+                WaveNumberDisplay.text = "Boss Wave";
                 //boss wave
                 Debug.Log("Boss Wave");
+                BossManager.GetComponent<BossManagerScript>().SpawnBoss();
                 for (int i = 0; i < level + 1; i++)
                 {
-                    randNum = UnityEngine.Random.Range(0, 7);
+                    //Enemy Spawning continuous
+                    randNum = UnityEngine.Random.Range(17, 20);
                     SpawnWave(randNum, (i * 4));
                 }
                 //add variable that stops the game after the boss is defeated rather than spawning a new wave
@@ -93,13 +119,8 @@ public class WaveManager : MonoBehaviour
                 WaveNumberDisplay.text = "Wave #" + waveNumber.ToString();
                 for (int i = 0; i < level+1; i++)
                 {
-                    randNum = UnityEngine.Random.Range(0, 7);
+                    randNum = UnityEngine.Random.Range(0, 14);
                     SpawnWave(randNum, (i*4));
-                }
-                if(waveNumber % 2 == 0)
-                {
-                    randNum = UnityEngine.Random.Range(0, 4);
-                    asteroidManager.GetComponent<AsteroidManagerScript>().SpawnAsteroid(randNum);
                 }
             }
         }
@@ -153,6 +174,21 @@ public class WaveManager : MonoBehaviour
             AmNode[] nodes = { NodeMiddle3, NodeLoopMR, NodeLoopTR, NodeSpawn3 };
             return nodes;
         }
+        else if (path == 5)
+        {
+            AmNode[] nodes = { NodeEnd1, NodeBossWave, NodeKill };
+            return nodes;
+        }
+        else if (path == 6)
+        {
+            AmNode[] nodes = { NodeEnd2, NodeBossWave, NodeKill };
+            return nodes;
+        }
+        else if (path == 7)
+        {
+            AmNode[] nodes = { NodeEnd3, NodeBossWave, NodeKill };
+            return nodes;
+        }
         else return null;
     }
     public void SpawnWave(int randNum, int addLayer)
@@ -160,51 +196,165 @@ public class WaveManager : MonoBehaviour
 
         if (randNum == 0)
         {
-            SpawnEnemy(0, 0+addLayer,level);
+            SpawnEnemy(0, 2 + addLayer,level);
+            SpawnEnemy(1, 2 + addLayer, level);
+            SpawnEnemy(2, 2 + addLayer, level);
             SpawnEnemy(0, 1 + addLayer, level);
-            SpawnEnemy(0, 2 + addLayer, level);
+            SpawnEnemy(1, 1 + addLayer, level);
+            SpawnEnemy(2, 1 + addLayer, level);
+            SpawnEnemy(0, 0 + addLayer, level);
+            SpawnEnemy(1, 0 + addLayer, level);
+            SpawnEnemy(2, 0 + addLayer, level);
+            SpawnEnemy(3, 2 + addLayer, level);
+            SpawnEnemy(4, 2 + addLayer, level);
+            SpawnEnemy(3, 1 + addLayer,level);
+            SpawnEnemy(4, 1 + addLayer,level);
         }
         else if (randNum == 1)
         {
-            SpawnEnemy(1, 0 + addLayer, level);
-            SpawnEnemy(1, 1 + addLayer, level);
-            SpawnEnemy(1, 2 + addLayer, level);
+            SpawnEnemy(0, 2 + addLayer, level);
+            SpawnEnemy(0, 1 + addLayer, level);
+            SpawnEnemy(0, 0 + addLayer, level);
         }
         else if (randNum == 2)
         {
-            SpawnEnemy(2, 0 + addLayer, level);
-            SpawnEnemy(2, 1 + addLayer, level);
-            SpawnEnemy(2, 2 + addLayer, level);
+            SpawnEnemy(1, 2 + addLayer, level);
+            SpawnEnemy(1, 1 + addLayer, level);
+            SpawnEnemy(1, 0 + addLayer, level);
         }
         else if (randNum == 3)
         {
-            //spawn 1 enemy on path 1 and 1 on 3
-            SpawnEnemy(0, 0 + addLayer, level);
+            SpawnEnemy(2, 2 + addLayer, level);
             SpawnEnemy(2, 1 + addLayer, level);
+            SpawnEnemy(2, 0 + addLayer, level);
         }
         else if (randNum == 4)
         {
-            //spawn 2 enemies on path 1 and 2 on 3
-            SpawnEnemy(0, 0 +addLayer, level);
-            SpawnEnemy(2, 0 + addLayer, level);
-            SpawnEnemy(0, 1 + addLayer, level);
-            SpawnEnemy(2, 1 + addLayer, level);
+            SpawnEnemy(3, 2 + addLayer, level);
+            SpawnEnemy(4, 2 + addLayer, level);
+            SpawnEnemy(3, 1 + addLayer, level);
+            SpawnEnemy(4, 1 + addLayer, level);
         }
         else if (randNum == 5)
         {
-            SpawnEnemy(0, 0 + addLayer, level);
-            SpawnEnemy(2, 0 + addLayer, level);
-            SpawnEnemy(0, 1 + addLayer, level);
-            SpawnEnemy(2, 1 + addLayer, level);
             SpawnEnemy(0, 2 + addLayer, level);
-            SpawnEnemy(1, 2 + addLayer, level);
+            SpawnEnemy(0, 1 + addLayer, level);
+            SpawnEnemy(0, 0 + addLayer, level);
             SpawnEnemy(2, 2 + addLayer, level);
+            SpawnEnemy(2, 1 + addLayer, level);
+            SpawnEnemy(2, 0 + addLayer, level);
         }
         else if (randNum == 6)
         {
-            //spawn 1 enemy on path 1 and 1 on 3
-            SpawnEnemy(3, 0 + addLayer, level);
-            SpawnEnemy(4, 0 + addLayer, level);
+            SpawnEnemy(0, 1 + addLayer, level);
+            SpawnEnemy(2, 1 + addLayer, level);
+            SpawnEnemy(3, 2 + addLayer, level);
+            SpawnEnemy(4, 2 + addLayer, level);
+            SpawnEnemy(3, 1 + addLayer, level);
+            SpawnEnemy(4, 1 + addLayer, level);
         }
+        else if (randNum == 7)
+        {
+            SpawnEnemy(0, 2 + addLayer, level);
+            SpawnEnemy(1, 2 + addLayer, level);
+            SpawnEnemy(2, 2 + addLayer, level);
+            SpawnEnemy(0, 1 + addLayer, level);
+            SpawnEnemy(2, 1 + addLayer, level);
+            SpawnEnemy(0, 0 + addLayer, level);
+            SpawnEnemy(2, 0 + addLayer, level);
+        }
+        else if (randNum == 8)
+        {
+            SpawnEnemy(0, 2 + addLayer, level);
+            SpawnEnemy(2, 2 + addLayer, level);
+            SpawnEnemy(1, 1 + addLayer, level);
+            SpawnEnemy(0, 0 + addLayer, level);
+            SpawnEnemy(2, 0 + addLayer, level);
+        }
+        else if (randNum == 9)
+        {
+            SpawnEnemy(0, 2 + addLayer, level);
+            SpawnEnemy(2, 2 + addLayer, level);
+            SpawnEnemy(0, 0 + addLayer, level);
+            SpawnEnemy(2, 0 + addLayer, level);
+        }
+        else if (randNum == 10)
+        {
+            SpawnEnemy(0, 2 + addLayer, level);
+            SpawnEnemy(1, 1 + addLayer, level);
+            SpawnEnemy(2, 0 + addLayer, level);
+        }
+        else if (randNum == 11)
+        {
+            SpawnEnemy(1,2+addLayer,level);
+            SpawnEnemy(3,2+addLayer,level);
+            SpawnEnemy(4,2+addLayer,level);
+            SpawnEnemy(0,1+addLayer,level);
+            SpawnEnemy(2,1+addLayer,level);
+            SpawnEnemy(1,0+addLayer,level);
+        }
+        else if (randNum == 12)
+        {
+            SpawnEnemy(1, 2 + addLayer, level);
+            SpawnEnemy(3, 2 + addLayer, level);
+            SpawnEnemy(4, 2 + addLayer, level);
+            SpawnEnemy(1, 1 + addLayer, level);
+            SpawnEnemy(1, 0 + addLayer, level);
+        }
+        else if (randNum == 13)
+        {
+            SpawnEnemy(0, 2 + addLayer, level);
+            SpawnEnemy(1, 2 + addLayer, level);
+            SpawnEnemy(2, 2 + addLayer, level);
+            SpawnEnemy(0, 1 + addLayer, level);
+            SpawnEnemy(2, 1 + addLayer, level);
+            SpawnEnemy(0, 0 + addLayer, level);
+            SpawnEnemy(1, 0 + addLayer, level);
+            SpawnEnemy(2, 0 + addLayer, level);
+        }
+        else if (randNum == 17)
+        {
+            SpawnEnemy(5, 5 + addLayer, level);
+            SpawnEnemy(5, 1 + addLayer, level);
+            SpawnEnemy(5, 2 + addLayer, level);
+        }
+        else if (randNum == 18)
+        {
+            SpawnEnemy(6, 0 + addLayer, level);
+            SpawnEnemy(6, 1 + addLayer, level);
+            SpawnEnemy(6, 2 + addLayer, level);
+        }
+        else if (randNum == 19)
+        {
+            SpawnEnemy(7, 0 + addLayer, level);
+            SpawnEnemy(7, 1 + addLayer, level);
+            SpawnEnemy(7, 2 + addLayer, level);
+        }
+        // Enemies can spawn in one of 13 grid spaces
+        // (-2,2) (-1,2) (0,2) (1,2) (2,2)
+        // (-2,1) (-1,1) (0,1) (1,1) (2,1)
+        //        (-1,0) (0,0) (1,0)
+
+        // (-1,2) SpawnEnemy(0,2+addLayer,level);
+        // (0,2) SpawnEnemy(1,2+addLayer,level);
+        // (1,2) SpawnEnemy(2,2+addLayer,level);
+
+        // (-1,1) SpawnEnemy(0,1+addLayer,level);
+        // (0,1) SpawnEnemy(1,1+addLayer,level);
+        // (1,1) SpawnEnemy(2,1+addLayer,level);
+
+        // (-1,0) SpawnEnemy(0,0+addLayer,level);
+        // (0,0) SpawnEnemy(1,0+addLayer,level);
+        // (1,0) SpawnEnemy(2,0+addLayer,level);
+
+        //(-2,2) SpawnEnemy(3,2+addLayer,level);
+        //(2,2) SpawnEnemy(4,2+addLayer,level);
+
+        //(-2,1) SpawnEnemy(3,1+addLayer,level);
+        //(2,1) SpawnEnemy(4,1+addLayer,level);
+
+        
+
+
     }
 }

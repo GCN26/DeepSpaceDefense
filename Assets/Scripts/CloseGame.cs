@@ -5,15 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class CloseGame : MonoBehaviour
 {
-    public string SceneName;
-
-    private void Update()
-    {
-        
-    }
-
     public void MainMenu()
     {
-        SceneManager.LoadScene(sceneName: SceneName);
+        SceneManager.LoadScene(sceneName: "Menu");
+    }
+    public void Restart()
+    {
+        SceneManager.LoadScene(sceneName: "Game");
+    }
+    public void CloseQuit()
+    {
+        UnityEditor.EditorApplication.isPlaying = false;
+        Application.Quit();
     }
 }

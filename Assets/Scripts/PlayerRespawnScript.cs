@@ -20,6 +20,14 @@ public class PlayerRespawnScript : MonoBehaviour
     public TextMeshProUGUI livesCount;
     public TextMeshProUGUI hpCount;
 
+    public GameObject PauseMenu;
+
+    public GameObject MidMenu;
+    public TextMeshProUGUI MidMenuText;
+
+    float endTimer = 0;
+    float endTarget = 1;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -57,8 +65,16 @@ public class PlayerRespawnScript : MonoBehaviour
         }
         else if (GameObject.Find("Player") == null && lives == 0)
         {
-            //game over
-            //display text object and end the game after 5 seconds
+            livesCount.text = "Lives: " + lives;
+            Time.timeScale = 1;
+            Destroy(PauseMenu);
+            //end game
+            endTimer += Time.deltaTime;
+            if (endTimer > endTarget)
+            {
+                MidMenuText.text = "GAME OVER";
+                MidMenu.SetActive(true);
+            }
         }
         else if (GameObject.Find("Player"))
         {

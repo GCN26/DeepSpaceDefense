@@ -177,6 +177,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97d57cb95bd12aa4f9e096e7fa538ea4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 5
+  hp: 10
   waveNumber: 0
-  waveManager: {fileID: 0}
+  explosion: {fileID: 3836231866899782792, guid: 08c77861cab6dd846ae3597b4357ecc1, type: 3}

@@ -15,7 +15,7 @@ public class MenuScript : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown("escape"))
+        if (Input.GetKeyDown("escape") && menu != null) 
         {
             ButtonPress();
         }

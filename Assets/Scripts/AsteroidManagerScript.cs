@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class AsteroidManagerScript : MonoBehaviour
@@ -9,18 +10,25 @@ public class AsteroidManagerScript : MonoBehaviour
     public AmNode NodeSpawn1, NodeSpawn2;
     //End Nodes
     public AmNode NodeEnd1, NodeEnd2, NodeEnd3, NodeKill;
-    public int waveCheck;
     public GameObject waveManager;
 
-    private void Start()
-    {
-        waveCheck = waveManager.gameObject.GetComponent<WaveManager>().waveNumber;
-    }
+    public float spawnTimer = 0;
+    public float spawnTimerTarget = 10;
+
+
     private void Update()
     {
-        waveCheck = waveManager.gameObject.GetComponent<WaveManager>().waveNumber;
-        var aster = GameObject.Find("Asteroid");
-        if (aster!= null && aster.GetComponent<AsteroidScript>().waveNumber < waveCheck)
+        if (waveManager.GetComponent<WaveManager>().UpgradeMenu.activeSelf == false && waveManager.GetComponent<WaveManager>().bossAlive == true)
+        {
+            spawnTimer += Time.deltaTime;
+            if (spawnTimer > spawnTimerTarget)
+            {
+                spawnTimer = 0;
+                var randNum = Random.Range(0, 4);
+                SpawnAsteroid(randNum);
+            }
+        }
+        else
         {
             Destroy(GameObject.Find("Asteroid"));
         }
@@ -33,7 +41,6 @@ public class AsteroidManagerScript : MonoBehaviour
         if(path == 2 || path == 3) { direct = 20; }
         GameObject Asteroid = Instantiate(prefab, new Vector3(direct, 25, 0), Quaternion.identity);
         Asteroid.name = "Asteroid";
-        Asteroid.GetComponent<AsteroidScript>().waveManager = waveManager;
         AmNode[] nodes = PathSelect(path);
         Asteroid.GetComponent<AsteroidNodeScript>().nodes = nodes;
     }
