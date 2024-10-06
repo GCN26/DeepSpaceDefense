@@ -27,8 +27,8 @@ public class BossManagerScript : MonoBehaviour
             if (timer > target)
             {
                 timer = 0;
-                randNum = UnityEngine.Random.Range(7, 10);
-                waveManager.GetComponent<WaveManager>().SpawnWave(randNum, (4));
+                randNum = UnityEngine.Random.Range(0, 3);
+                waveManager.GetComponent<WaveManager>().SpawnBossWave(randNum, (4));
             }
         }
     }

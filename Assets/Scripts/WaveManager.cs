@@ -109,8 +109,8 @@ public class WaveManager : MonoBehaviour
                 for (int i = 0; i < level + 1; i++)
                 {
                     //Enemy Spawning continuous
-                    randNum = UnityEngine.Random.Range(17, 20);
-                    SpawnWave(randNum, (i * 4));
+                    randNum = UnityEngine.Random.Range(0, 3);
+                    SpawnBossWave(randNum, (i * 4));
                 }
                 //add variable that stops the game after the boss is defeated rather than spawning a new wave
             }
@@ -312,24 +312,6 @@ public class WaveManager : MonoBehaviour
             SpawnEnemy(1, 0 + addLayer, level);
             SpawnEnemy(2, 0 + addLayer, level);
         }
-        else if (randNum == 17)
-        {
-            SpawnEnemy(5, 5 + addLayer, level);
-            SpawnEnemy(5, 1 + addLayer, level);
-            SpawnEnemy(5, 2 + addLayer, level);
-        }
-        else if (randNum == 18)
-        {
-            SpawnEnemy(6, 0 + addLayer, level);
-            SpawnEnemy(6, 1 + addLayer, level);
-            SpawnEnemy(6, 2 + addLayer, level);
-        }
-        else if (randNum == 19)
-        {
-            SpawnEnemy(7, 0 + addLayer, level);
-            SpawnEnemy(7, 1 + addLayer, level);
-            SpawnEnemy(7, 2 + addLayer, level);
-        }
         // Enemies can spawn in one of 13 grid spaces
         // (-2,2) (-1,2) (0,2) (1,2) (2,2)
         // (-2,1) (-1,1) (0,1) (1,1) (2,1)
@@ -352,9 +334,26 @@ public class WaveManager : MonoBehaviour
 
         //(-2,1) SpawnEnemy(3,1+addLayer,level);
         //(2,1) SpawnEnemy(4,1+addLayer,level);
-
-        
-
-
+    }
+    public void SpawnBossWave(int randnum, int addLayer)
+    {
+        if (randNum == 0)
+        {
+            SpawnEnemy(5, 5 + addLayer, level);
+            SpawnEnemy(5, 1 + addLayer, level);
+            SpawnEnemy(5, 2 + addLayer, level);
+        }
+        else if (randNum == 1)
+        {
+            SpawnEnemy(6, 0 + addLayer, level);
+            SpawnEnemy(6, 1 + addLayer, level);
+            SpawnEnemy(6, 2 + addLayer, level);
+        }
+        else if (randNum == 2)
+        {
+            SpawnEnemy(7, 0 + addLayer, level);
+            SpawnEnemy(7, 1 + addLayer, level);
+            SpawnEnemy(7, 2 + addLayer, level);
+        }
     }
 }
