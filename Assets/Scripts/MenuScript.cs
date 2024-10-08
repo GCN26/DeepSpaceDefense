@@ -44,6 +44,5 @@ public class MenuScript : MonoBehaviour
         {
             Pause();
         }
-        Debug.Log(Paused);
     }
 }

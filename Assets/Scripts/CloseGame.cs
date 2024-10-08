@@ -15,7 +15,6 @@ public class CloseGame : MonoBehaviour
     }
     public void CloseQuit()
     {
-        UnityEditor.EditorApplication.isPlaying = false;
         Application.Quit();
     }
 }

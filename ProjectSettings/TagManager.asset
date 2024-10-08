@@ -9,6 +9,7 @@ TagManager:
   - EnemyBullet
   - Enemy
   - Asteroid
+  - BG
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - EnemyIgnore
   - EnemyAndBulletIgnore
   - EnemyAndAsteroidIgnore
-  - 
+  - BGCollide
   - 
   - 
   - 
